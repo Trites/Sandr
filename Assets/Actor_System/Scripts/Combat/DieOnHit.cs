@@ -18,7 +18,7 @@ public class DieOnHit : MonoBehaviour {
 	
 	}
 	
-	public void HitBy(MeleeWeapon weapon){
+	public void HitBy(MeleeWeapon.WeaponHitData hitData){
 		
 		print("Hit!");
 		emitter.Emit(50);
@@ -28,9 +28,13 @@ public class DieOnHit : MonoBehaviour {
 		print("Simulating " + particles.Length + " particles.");
 		for(int i = 0; i < particles.Length; i++){
 			
-			particles[i].velocity = new Vector2(0,1);
+			float particleMass = Random.value * 10f + 2f;
+			//particles[i].position = hitData.HitPosition;
+			particles[i].velocity = Util.getBounceVelocity(particles[i].position, hitData.HitPosition, hitData.Direction*20,  -Vector2.right*10, particleMass, hitData.Force);
 		}
 		
 		emitter.particles = particles;
+		
+		Debug.DrawLine(transform.position, hitData.HitPosition, Color.red, 3f);
 	}
 }
