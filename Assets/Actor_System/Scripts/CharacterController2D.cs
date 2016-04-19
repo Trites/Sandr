@@ -48,6 +48,10 @@ public class CharacterController2D : MonoBehaviour {
 	private Vector3 _activeGlobalPlatformPoint;
 	private Vector3 _activeLocalPlatformPoint;
 	
+	void OnGUI(){
+		
+		GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + Velocity + " (" + Velocity.magnitude + ")");
+	}
 	
 	public void Awake(){
 		
@@ -179,9 +183,9 @@ public class CharacterController2D : MonoBehaviour {
 		
 		if(isRight){
 			
-			rayOrigin.x -= (halfWidth - SkinWidth);
+			rayOrigin.x -= (halfWidth + SkinWidth);
 		}else{
-			rayOrigin.x += (halfWidth - SkinWidth);
+			rayOrigin.x += (halfWidth + SkinWidth);
 		}
 		
 		Vector2 rayDirection = isRight ? Vector2.right : -Vector2.right;
@@ -210,6 +214,7 @@ public class CharacterController2D : MonoBehaviour {
 		
 		_raycastTopLeft = _transform.position + new Vector3(center.x - size.x + SkinWidth, center.y + size.y - SkinWidth);
 		_raycastBottomRight = _transform.position + new Vector3(center.x + size.x - SkinWidth, center.y - size.y + SkinWidth);
+		//_raycastTopRight = _transform.position + new Vector3(center.x + size.x - SkinWidth, center.y + size.y - SkinWidth);
 		_raycastBottomLeft = _transform.position + new Vector3(center.x - size.x + SkinWidth, center.y - size.y + SkinWidth);
 	}
 	
@@ -230,8 +235,16 @@ public class CharacterController2D : MonoBehaviour {
 			if(!rayHit)
 				continue;
 				
-			if(i == 0 && HandleSlopeHorizontal(ref deltaMove, Vector2.Angle(rayHit.normal, Vector2.up), isGoingRight))
-				break;
+				
+			if(true){
+				
+				deltaMove.x -= (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);
+				if(HandleSlopeHorizontal(ref deltaMove, Vector2.Angle(rayHit.normal, Vector2.up), isGoingRight)){	
+					deltaMove.x += (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);								
+					continue;
+				}
+				deltaMove.x += (rayHit.point.x - rayVector.x);
+			}
 				
 			deltaMove.x = rayHit.point.x - rayVector.x;
 			rayDistance = Mathf.Abs(deltaMove.x);
@@ -349,8 +362,12 @@ public class CharacterController2D : MonoBehaviour {
 		if(deltaMove.y > 0.07f)
 			return true;
 			
-		deltaMove.x += isGoingRight ? -SkinWidth : SkinWidth;
-		deltaMove.y = Mathf.Abs(Mathf.Tan(angle * Mathf.Deg2Rad) * deltaMove.x);
+		//deltaMove.x += (isGoingRight ? -SkinWidth : SkinWidth);
+		//deltaMove.y = Mathf.Abs(Mathf.Tan(angle * Mathf.Deg2Rad) * deltaMove.x);
+		float deltaV = deltaMove.x;
+		deltaMove.x = Mathf.Cos(angle * Mathf.Deg2Rad) * deltaV;
+		deltaMove.y = Mathf.Sin(angle * Mathf.Deg2Rad) * deltaV + SkinWidth;
+		
 		State.IsMovingUpSlope = true;
 		State.IsCollidingDown = true;
 		
