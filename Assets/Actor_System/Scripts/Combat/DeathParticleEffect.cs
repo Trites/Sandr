@@ -18,12 +18,11 @@ public class DeathParticleEffect : MonoBehaviour {
 		//emitter.emit = false;
 		
 		Particle[] particles = emitter.particles;
-		
-		print("Simulating " + particles.Length + " particles.");
+	
 		for(int i = 0; i < particles.Length; i++){
 			
 			float particleMass = Random.value * particleMassSpan + particleMassAdjust;
-			particles[i].velocity = Util.getBounceVelocity(particles[i].position, impactPosition, impactVelocity,  particleVelocity, particleMass, impactMass);
+			particles[i].velocity = Util.getBounceVelocity(particles[i].position, impactPosition, particleVelocity, impactVelocity, particleMass, impactMass);
 		}
 		
 		emitter.particles = particles;

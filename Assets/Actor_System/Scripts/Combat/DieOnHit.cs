@@ -12,12 +12,18 @@ public class DieOnHit : MonoBehaviour {
 	
 	public void HitBy(MeleeWeapon.WeaponHitData hitData){
 		
-		print("Hit!");
+		Vector2 particleVelocity = Vector2.zero;
+		
+		Rigidbody2D body = GetComponent<Rigidbody2D>();
+		if(body != null){
+			
+			particleVelocity = body.velocity;
+		}
 		
 		DeathParticleEffect emitter = (Instantiate(particleEffect, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
 		
-		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, Vector2.zero, hitData.Force, 25f, 5, 50);
-			
+		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, particleVelocity*5f, hitData.Force, 120f, 20f, 80);
+
 		Debug.DrawLine(transform.position, hitData.HitPosition, Color.red, 3f);
 		Destroy(gameObject);
 		

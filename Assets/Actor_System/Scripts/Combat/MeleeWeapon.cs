@@ -17,12 +17,16 @@ public class MeleeWeapon : MonoBehaviour {
 	}
 
 	public LayerMask TargetLayer;
-	public float Reach = 2f;
+	public float Reach = 3.5f;
 	private Transform _transform;
+	
+	private bool _attacking;
 	
 	public void Awake(){
 		
 		_transform = transform;
+		GetComponentInParent<CharacterAnimationInterface>().EndAttackEvent += EndAttackAnim;
+		_attacking = false;
 	}
 	
 	public void Strike(){
@@ -40,10 +44,34 @@ public class MeleeWeapon : MonoBehaviour {
 	}
 	
 	public void Update(){
-		
-		if(Input.GetKeyDown(KeyCode.LeftControl)){
-			
-			Strike();
+
+		if(!_attacking && Input.GetKeyDown(KeyCode.LeftControl)){
+					
+			Animator anim = GetComponentInParent<Animator>();
+			anim.SetTrigger("Attack");
+			_attacking = true;
 		}
+	}
+	
+	public void FixedUpdate(){
+				
+		if(_attacking){
+			
+			Vector2 position = _transform.position;
+			Vector2 direction = (Vector2.right * Mathf.Sign(_transform.lossyScale.x)).normalized;
+			Debug.DrawRay(position, direction * Reach, Color.cyan, 0.5f);	
+			RaycastHit2D rayHit = Physics2D.Raycast(position, direction, Reach, TargetLayer);
+			
+			if(rayHit){
+				
+				rayHit.collider.gameObject.SendMessage("HitBy", new WeaponHitData(rayHit.point, direction, 100f), SendMessageOptions.DontRequireReceiver);
+			}
+		}
+	}
+	
+	public void EndAttackAnim(){
+		
+		//print("End attack.");
+		_attacking = false;
 	}
 }
