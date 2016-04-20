@@ -342,8 +342,8 @@ EllipsoidParticleEmitter:
   m_Emit: 1
   minSize: 0.1
   maxSize: 0.1
-  minEnergy: 1
-  maxEnergy: 1
+  minEnergy: 0.8
+  maxEnergy: 1.1
   minEmission: 10
   maxEmission: 50
   worldVelocity: {x: 0, y: 0, z: 0}
@@ -354,9 +354,9 @@ EllipsoidParticleEmitter:
   angularVelocity: 0
   rndAngularVelocity: 0
   rndRotation: 0
-  Simulate in Worldspace?: 0
+  Simulate in Worldspace?: 1
   m_OneShot: 0
-  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_Ellipsoid: {x: 0.5, y: 0.5, z: 1}
   m_MinEmitterRange: 0
 --- !u!12 &1451168975
 ParticleAnimator:
@@ -385,7 +385,7 @@ ParticleAnimator:
   sizeGrow: 0
   rndForce: {x: 0, y: 0, z: 0}
   force: {x: 0, y: 0, z: 0}
-  damping: 1
+  damping: 0.001
   stopSimulation: 0
   autodestruct: 0
 --- !u!26 &1451168976
