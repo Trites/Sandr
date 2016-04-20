@@ -18,15 +18,17 @@ public class MeleeWeapon : MonoBehaviour {
 
 	public LayerMask TargetLayer;
 	public float Reach = 3.5f;
-	private Transform _transform;
 	
+	private Transform _transform;
 	private bool _attacking;
+	private CameraEffects _camera;
 	
 	public void Awake(){
 		
 		_transform = transform;
 		GetComponentInParent<CharacterAnimationInterface>().EndAttackEvent += EndAttackAnim;
 		_attacking = false;
+		_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraEffects>();
 	}
 	
 	public void Strike(){
@@ -50,6 +52,7 @@ public class MeleeWeapon : MonoBehaviour {
 			Animator anim = GetComponentInParent<Animator>();
 			anim.SetTrigger("Attack");
 			_attacking = true;
+			_camera.ShakeCamera(0, 0.08f, 0.1f);
 		}
 	}
 	
@@ -65,6 +68,7 @@ public class MeleeWeapon : MonoBehaviour {
 			if(rayHit){
 				
 				rayHit.collider.gameObject.SendMessage("HitBy", new WeaponHitData(rayHit.point, direction, 100f), SendMessageOptions.DontRequireReceiver);
+				_camera.ShakeCamera(0.5f, 0.05f, 0.2f);
 			}
 		}
 	}
