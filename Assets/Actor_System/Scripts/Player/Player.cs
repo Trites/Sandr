@@ -5,30 +5,45 @@ using System;
 public class Player : MonoBehaviour {
 
 	private bool isFacingRight;
-	private CharacterController2D controller;
+	private CharacterController2D _controller;
 	private float horizontalMovementDirection;
 	
 	public float MaxSpeed = 7f;
 	public float AccelerationGround = 10f;
 	public float AccelerationAir = 5f;
 	
+	private bool _isWallHanging;
+	
 	void OnGUI(){
 	
-		GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + controller.Velocity + " (" + controller.Velocity.magnitude + ")");
+		GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
+		GUI.Label(new Rect(0, 30, 300, 50), "Wall hanging: " + _isWallHanging);
 	}
 	
 	public void Start(){
 		
-		controller = GetComponent<CharacterController2D>();
+		_controller = GetComponent<CharacterController2D>();
 		isFacingRight = transform.localScale.x > 0;
 	}
 	
 	public void Update(){
 		
+		_isWallHanging = false;
 		HandleInput();
 
-		float movementFactor = controller.State.IsCollidingDown ? AccelerationGround : AccelerationAir;
-		controller.SetHorizontalForce(Mathf.Lerp(controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * movementFactor));
+		if(_isWallHanging){		
+			
+			//_controller.SetForce(Vector2.zero);
+			//_controller.Parameters.Gravity = 0f;
+			//_controller.Parameters.JumpRestrictions = ControllerParameters.JumpBehaviour.CanJumpAnywhere;
+		}else{
+			
+			//_controller.Parameters.Gravity = -50f;
+			//_controller.Parameters.JumpRestrictions = ControllerParameters.JumpBehaviour.CanJumpOnGround;
+		}
+
+		float movementFactor = _controller.State.IsCollidingDown ? AccelerationGround : AccelerationAir;
+		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * movementFactor));
 	}
 
     private void HandleInput()
@@ -39,20 +54,32 @@ public class Player : MonoBehaviour {
 			
 			if(!isFacingRight)
 				Flip();
+				
+			if(_controller.State.IsCollidingRight && !_controller.State.IsCollidingDown){
+				
+				_isWallHanging = true;
+			}
+				
 		}else if(Input.GetKey(KeyCode.LeftArrow)){
 			
 			horizontalMovementDirection = -1;
 		
 			if(isFacingRight)
 				Flip();
+				
+			if(_controller.State.IsCollidingLeft && !_controller.State.IsCollidingDown){
+				
+				_isWallHanging = true;
+			}
+			
 		}else{
 			
 			horizontalMovementDirection = 0;
 		}
 		
-		if(controller.CanJump && Input.GetKeyDown(KeyCode.Space)){
+		if(_controller.CanJump && Input.GetKeyDown(KeyCode.Space)){
 			
-			controller.Jump();
+			_controller.Jump();
 		}
     }
 

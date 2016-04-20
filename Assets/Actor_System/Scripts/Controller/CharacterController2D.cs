@@ -32,6 +32,7 @@ public class CharacterController2D : MonoBehaviour {
 	
 	private Vector2 _velocity;
 	private Transform _transform;
+	private Rigidbody2D _body;
 	private Vector2 _localScale;
 	private BoxCollider2D _boxCollider;
 	private ControllerParameters _overrideParameters;	
@@ -53,6 +54,7 @@ public class CharacterController2D : MonoBehaviour {
 		HandleCollisions = true;
 		State = new ControllerState();
 		_transform = transform;
+		_body = GetComponent<Rigidbody2D>();
 		_localScale = transform.localScale;
 		_boxCollider = GetComponent<BoxCollider2D>();
 	
@@ -111,7 +113,7 @@ public class CharacterController2D : MonoBehaviour {
 			if(deltaMove.y < 0 && wasGrounded)
 				HandleSlopeVertical(ref deltaMove);
 				
-			if(Mathf.Abs(deltaMove.x) > 0.001f)
+			if(Mathf.Abs(deltaMove.x) > 0.001f)		
 				MoveHorizontally(ref deltaMove);
 				
 			MoveVertically(ref deltaMove);
@@ -119,7 +121,10 @@ public class CharacterController2D : MonoBehaviour {
 			//CorrectHorizontalPlacement(ref deltaMove, false);
 		}
 		
+		//print(deltaMove);
 		_transform.Translate(deltaMove, Space.World);
+		//_body.MovePosition(_transform.position + (Vector3)deltaMove);
+		
 		
 		if(Time.deltaTime > 0)
 			_velocity = deltaMove / Time.deltaTime;

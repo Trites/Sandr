@@ -22,7 +22,7 @@ public class DieOnHit : MonoBehaviour {
 		
 		DeathParticleEffect emitter = (Instantiate(particleEffect, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
 		
-		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, particleVelocity*5f, hitData.Force, 120f, 20f, 80);
+		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, particleVelocity*5f, hitData.Force, 120f, 20f, 120);
 
 		Debug.DrawLine(transform.position, hitData.HitPosition, Color.red, 3f);
 		Destroy(gameObject);
