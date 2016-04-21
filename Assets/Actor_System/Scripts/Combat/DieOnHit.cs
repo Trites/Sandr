@@ -2,11 +2,11 @@
 
 public class DieOnHit : MonoBehaviour {
 	
-	public GameObject particleEffect;
+	public GameObject ParticleEffect;
 	
 	void Start(){
 		
-		if(particleEffect == null)
+		if(ParticleEffect == null)
 			Debug.LogError("No emitter!");
 	}
 	
@@ -20,12 +20,11 @@ public class DieOnHit : MonoBehaviour {
 			particleVelocity = body.velocity;
 		}
 		
-		DeathParticleEffect emitter = (Instantiate(particleEffect, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
+		DeathParticleEffect emitter = (Instantiate(ParticleEffect, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
 		
 		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, particleVelocity*5f, hitData.Force, 120f, 20f, 120);
 
 		Debug.DrawLine(transform.position, hitData.HitPosition, Color.red, 3f);
-		Destroy(gameObject);
-		
+		Destroy(gameObject);		
 	}
 }

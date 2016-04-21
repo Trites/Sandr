@@ -19,9 +19,13 @@ public class MeleeWeapon : MonoBehaviour {
 	public LayerMask TargetLayer;
 	public float Reach = 3.5f;
 	
+	public AudioSource StabSound;
+	public AudioSource HitSound;
+	
 	private Transform _transform;
 	private bool _attacking;
 	private CameraEffects _camera;
+	//private AudioSource _audio;
 	
 	public void Awake(){
 		
@@ -29,6 +33,7 @@ public class MeleeWeapon : MonoBehaviour {
 		GetComponentInParent<CharacterAnimationInterface>().EndAttackEvent += EndAttackAnim;
 		_attacking = false;
 		_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraEffects>();
+		//_audio = GetComponent<AudioSource>();
 	}
 	
 	public void Strike(){
@@ -53,6 +58,7 @@ public class MeleeWeapon : MonoBehaviour {
 			anim.SetTrigger("Attack");
 			_attacking = true;
 			_camera.ShakeCamera(0, 0.08f, 0.1f);
+			StabSound.Play();
 		}
 	}
 	
@@ -67,10 +73,19 @@ public class MeleeWeapon : MonoBehaviour {
 			
 			if(rayHit){
 				
+				HitSound.Play();
+				//Time.timeScale = 0.1f;
+				//Invoke("ResetTimeScale", 0.002f);
 				rayHit.collider.gameObject.SendMessage("HitBy", new WeaponHitData(rayHit.point, direction, 100f), SendMessageOptions.DontRequireReceiver);
 				_camera.ShakeCamera(0.5f, 0.05f, 0.2f);
+
 			}
 		}
+	}
+	
+	public void ResetTimeScale(){
+		
+		Time.timeScale = 1f;
 	}
 	
 	public void EndAttackAnim(){

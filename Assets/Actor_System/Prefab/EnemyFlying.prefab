@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8478285cd530d4a57a1b182f3840b40b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleEffect: {fileID: 119314, guid: 6465c4973afe74fdc9244dce65e6122e, type: 2}
+  ParticleEffect: {fileID: 119314, guid: 6465c4973afe74fdc9244dce65e6122e, type: 2}
 --- !u!114 &11497632
 MonoBehaviour:
   m_ObjectHideFlags: 1

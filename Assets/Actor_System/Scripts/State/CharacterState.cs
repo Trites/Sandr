@@ -10,8 +10,11 @@ public abstract class CharacterState : MonoBehaviour {
 	
 	void OnGUI(){
 	
-		GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
-		GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);
+		if(this.tag == "Player"){
+		
+			GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
+			GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);	
+		}
 	}
 	
 	void Awake(){
