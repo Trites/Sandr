@@ -48,7 +48,6 @@ public class PlayerAirState : CharacterState {
 	
 	public override bool IsRelevant(){
 		
-		print("Check");
 		return !_controller.State.IsCollidingDown;
 	}
 }

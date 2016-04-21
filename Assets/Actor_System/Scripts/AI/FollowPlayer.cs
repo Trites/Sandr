@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterController2D))]
-public class FollowPlayer : MonoBehaviour {
+public abstract class FollowPlayer : CharacterState {
 
-	private const string _playerTag = "Player";
-	private const float _exploreTimerMax = 5f;
-	private const float _exploreTimerMin = 2f;
-	
+	protected const string _playerTag = "Player";
+
+
+	public  float ExploreTimerMin = 2f;
+	public float ExploreTimerMax = 5f;	
 	public LayerMask BlockerLayer;
 	public float MaxSpeed = 4f; 	
 	
+	public Vector2 DirectionToTarget { get { return _directionToTarget; }}
+	public Vector2 DirectionToPlayer { get { return (_targetTransform.position - _transform.position).normalized; }}
+	public float DistanceToPlayer { get { return (_targetTransform.position - _transform.position).magnitude; }}
+	
 	private Transform _transform;
-	private CharacterController2D _controller;
 	private Transform _targetTransform;
 	private bool _seePlayer;
 	private float _exploreTimer;
@@ -33,30 +37,28 @@ public class FollowPlayer : MonoBehaviour {
 			Debug.LogError("No controller.");
 	}
 	
-	public void Update(){
-
+	protected override void Update(){
+		base.Update();
 		
 		if(_seePlayer && Vector2.Distance(_transform.position, _targetTransform.position) > 1f){
 			
-			_directionToTarget = (_targetTransform.position - _transform.position).normalized;
+			_directionToTarget = DirectionToPlayer;
 	
 		}else{
 			
 			if(_exploreTimer <= 0){
-				
-				_directionToTarget = new Vector2(Random.value - 0.5f, 0).normalized;
-				_exploreTimer = Random.value * (_exploreTimerMax - _exploreTimerMin) + _exploreTimerMin;
+				_directionToTarget = SelectExploreDirection();
+				_exploreTimer = Random.value * (ExploreTimerMax - ExploreTimerMin) + ExploreTimerMin;
 			}else{
 				
 				_exploreTimer -= Time.deltaTime;
 			}
 		}
 		
-		
-		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, _directionToTarget.x * MaxSpeed, Time.deltaTime * 5f));
+		MoveTowardsTarget();
 	}
 	
-	public void FixedUpdate(){
+	protected void FixedUpdate(){
 		
 		Vector2 targetVector = (_targetTransform.position - _transform.position);
 		Vector2 directionToTarget = targetVector.normalized;
@@ -66,16 +68,21 @@ public class FollowPlayer : MonoBehaviour {
 		
 		if(rayHit){
 			
-			if(rayHit.distance >= targetDistance - 0.5f){
-				_seePlayer = true;
-			}else{
-				
-				_seePlayer = false;
-			}
+			_seePlayer = false;
+
 		}else{
 			
 			_seePlayer = true;
 		}
 		
 	}
+	
+	public override bool IsRelevant(){
+		
+		return true;
+	}
+	
+	protected abstract Vector2 SelectExploreDirection();
+	
+	protected abstract void MoveTowardsTarget();
 }

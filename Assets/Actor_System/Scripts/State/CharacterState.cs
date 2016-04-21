@@ -4,8 +4,7 @@ public abstract class CharacterState : MonoBehaviour {
 
 	public int Priority = 0;
 	
-	protected bool _isFacingRight { get{ return _facingDirection == 1; }}
-	
+	protected bool _isFacingRight { get{ return _facingDirection == 1; }}	
 	protected CharacterController2D _controller;
 	protected int _facingDirection;
 	
