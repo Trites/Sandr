@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
-public class Player : MonoBehaviour {
+public class CharacterGround : CharacterState {
 
-	private bool isFacingRight;
-	private CharacterController2D _controller;
 	private float horizontalMovementDirection;
 	
 	public float MaxSpeed = 7f;
@@ -21,9 +17,7 @@ public class Player : MonoBehaviour {
 	}
 	
 	public void Start(){
-		
-		_controller = GetComponent<CharacterController2D>();
-		isFacingRight = transform.localScale.x > 0;
+
 		_isWallHanging =false;
 	}
 	
@@ -80,7 +74,7 @@ public class Player : MonoBehaviour {
 			if(!(_isWallHanging && _controller.State.IsCollidingLeft))
 				horizontalMovementDirection = 1;
 			
-			if(!isFacingRight)
+			if(!_isFacingRight)
 				Flip();
 				
 		}else if(Input.GetKey(KeyCode.LeftArrow)){
@@ -88,7 +82,7 @@ public class Player : MonoBehaviour {
 			if(!(_isWallHanging && _controller.State.IsCollidingRight))
 				horizontalMovementDirection = -1;
 		
-			if(isFacingRight)
+			if(_isFacingRight)
 				Flip();
 			
 		}else{
@@ -96,10 +90,9 @@ public class Player : MonoBehaviour {
 			horizontalMovementDirection = 0;
 		}
     }
-
-    private void Flip()
-    {
-		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-		isFacingRight = transform.localScale.x > 0;
-    }
+	
+	public override bool IsRelevant(){
+		
+		return true;
+	}
 }
