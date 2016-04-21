@@ -24,7 +24,7 @@ public class CharacterController2D : MonoBehaviour {
 					
 					
 				if(Parameters.JumpRestrictions == ControllerParameters.JumpBehaviour.CanJumpOnGround)			
-					return State.IsCollidingDown;
+					return State.IsCollidingDown || State.IsCollidingLeft || State.IsCollidingRight;
 			
 				return false;
 			} 
@@ -88,7 +88,8 @@ public class CharacterController2D : MonoBehaviour {
 	
 	public void Jump(){
 		
-		AddForce(new Vector2(0, Parameters.JumpMagnitude));
+		SetVerticalForce(Parameters.JumpMagnitude);
+		//AddForce(new Vector2(0, Parameters.JumpMagnitude));
 		_jumpIn = Parameters.JumpFrequency;
 	}
 
@@ -112,19 +113,21 @@ public class CharacterController2D : MonoBehaviour {
 			
 			if(deltaMove.y < 0 && wasGrounded)
 				HandleSlopeVertical(ref deltaMove);
+			
+			float leftDist = HorizontalCollision(ref deltaMove, -1);
+			float rightDist = HorizontalCollision(ref deltaMove, 1);
 				
-			if(Mathf.Abs(deltaMove.x) > 0.001f)		
-				MoveHorizontally(ref deltaMove);
+			//if(Mathf.Abs(deltaMove.x) > 0.001f){
+			//	MoveHorizontally(ref deltaMove, (Mathf.Sign(deltaMove.x) == 1) ? rightDist : leftDist, 0f);
+			//}
+				//MoveHorizontally(ref deltaMove);
 				
 			MoveVertically(ref deltaMove);
 			//CorrectHorizontalPlacement(ref deltaMove, true);
 			//CorrectHorizontalPlacement(ref deltaMove, false);
 		}
 		
-		//print(deltaMove);
 		_transform.Translate(deltaMove, Space.World);
-		//_body.MovePosition(_transform.position + (Vector3)deltaMove);
-		
 		
 		if(Time.deltaTime > 0)
 			_velocity = deltaMove / Time.deltaTime;
@@ -218,6 +221,62 @@ public class CharacterController2D : MonoBehaviour {
 		_raycastBottomLeft = _transform.position + new Vector3(center.x - size.x + SkinWidth, center.y - size.y + SkinWidth);
 	}
 	
+	private float HorizontalCollision(ref Vector2 deltaMove, int direction){
+		
+		float slopeAngle = 0f;
+		float rayDistance = SkinWidth + 0.05f;
+		if(Mathf.Sign(deltaMove.x) == direction){
+		
+			rayDistance += Mathf.Abs(deltaMove.x);
+		}
+
+		Vector2 rayDirection = Vector2.right * direction; //isGoingRight ? Vector2.right : -Vector2.right;
+		Vector3 rayOrigin = (direction == 1) ? _raycastBottomRight : _raycastBottomLeft;
+		
+		for(int i = 0; i < HorizontalRaysCount; i++){
+			
+			Vector2 rayVector = new Vector2(rayOrigin.x, rayOrigin.y + (i * _horizontalRaySpacing));
+			Debug.DrawRay(rayVector, rayDirection * rayDistance, Color.red);
+			
+			RaycastHit2D rayHit = Physics2D.Raycast(rayVector, rayDirection, rayDistance, PlatformMask);
+			
+			if(!rayHit)
+				continue;
+
+			rayDistance = rayHit.distance;//Mathf.Abs(deltaMove.x);
+			slopeAngle = Vector2.Angle(rayHit.normal, Vector2.up);
+			
+			if(direction == 1){
+				
+				State.IsCollidingRight = true;
+			}else{
+				
+				State.IsCollidingLeft = true;	
+			}
+			
+			if(rayDistance < SkinWidth + 0.0001f)
+				break;
+		}
+		
+		if(direction == Mathf.Sign(deltaMove.x)){
+		
+			MoveHorizontally(ref deltaMove, rayDistance - SkinWidth, slopeAngle);
+		}
+		
+		return rayDistance - SkinWidth;
+	}
+	
+	private void MoveHorizontally(ref Vector2 deltaMove, float wallDistance, float slopeAngle){
+		
+		bool isGoingRight = deltaMove.x > 0;
+			
+		if(Mathf.Abs(deltaMove.x) > wallDistance){
+			
+			if(!HandleSlopeHorizontal(ref deltaMove, slopeAngle, isGoingRight))
+				deltaMove.x =  wallDistance * Mathf.Sign(deltaMove.x);			
+		}		
+	}
+	
 	private void MoveHorizontally(ref Vector2 deltaMove){
 		
 		bool isGoingRight = deltaMove.x > 0;
@@ -236,15 +295,13 @@ public class CharacterController2D : MonoBehaviour {
 				continue;
 				
 				
-			if(true){
-				
-				deltaMove.x -= (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);
-				if(HandleSlopeHorizontal(ref deltaMove, Vector2.Angle(rayHit.normal, Vector2.up), isGoingRight)){	
-					deltaMove.x += (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);								
-					continue;
-				}
-				deltaMove.x += (rayHit.point.x - rayVector.x);
+			deltaMove.x -= (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);
+			if(HandleSlopeHorizontal(ref deltaMove, Vector2.Angle(rayHit.normal, Vector2.up), isGoingRight)){	
+				deltaMove.x += (rayHit.point.x - rayVector.x);// + (isGoingRight ? -SkinWidth : SkinWidth);								
+				continue;
 			}
+			//deltaMove.x += (rayHit.point.x - rayVector.x);
+
 				
 			deltaMove.x = rayHit.point.x - rayVector.x;
 			rayDistance = Mathf.Abs(deltaMove.x);
@@ -319,6 +376,7 @@ public class CharacterController2D : MonoBehaviour {
 		}
 	}
 	
+	//TODO: This results on problems where player is standing on a horizontal "box" in a slope.
 	private void HandleSlopeVertical(ref Vector2 deltaMove){
 		
 		float center = (_raycastBottomLeft.x + _raycastBottomRight.x) / 2f;
@@ -359,8 +417,8 @@ public class CharacterController2D : MonoBehaviour {
 			return true;
 		}
 		
-		if(deltaMove.y > 0.07f)
-			return true;
+		//if(deltaMove.y > 0.07f)
+		//	return true;
 			
 		//deltaMove.x += (isGoingRight ? -SkinWidth : SkinWidth);
 		//deltaMove.y = Mathf.Abs(Mathf.Tan(angle * Mathf.Deg2Rad) * deltaMove.x);
