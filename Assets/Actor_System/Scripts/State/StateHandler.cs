@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class StateHandler : MonoBehaviour {
 
 	private CharacterState[] states;
 	private CharacterState activeState;
 	
-	void Awake(){
+	void Start(){
 		
 		states = GetComponents<CharacterState>();
 		
@@ -22,21 +21,30 @@ public class StateHandler : MonoBehaviour {
 	private void UpdateActiveState(){
 		
 		CharacterState prevState = activeState;
+		CharacterState nextState = (activeState.IsRelevant() ? activeState : null);
+		
 		foreach(CharacterState state in states){
 			
 			if(state.IsRelevant()){
-				if(state.Priority > activeState.Priority){
+				if(nextState == null || state.Priority > nextState.Priority){
 						
-					activeState = state;
+					nextState = state;
 				}
 			}
 		}
 		
-		if(activeState != prevState){
+		if(nextState != prevState){
 			
 			prevState.enabled = false;
-			activeState.enabled = true;
+			
+			if(nextState != null){
+				
+				nextState.enabled = true;
+				nextState.OnActivate();
+			}
 		}
+		
+		activeState = nextState;
 	}
 	
 	void FixedUpdate(){

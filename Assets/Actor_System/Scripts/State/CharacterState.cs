@@ -7,6 +7,12 @@ public abstract class CharacterState : MonoBehaviour {
 	protected CharacterController2D _controller;
 	protected bool _isFacingRight;
 	
+	void OnGUI(){
+	
+		GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
+		GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);
+	}
+	
 	void Awake(){
 				
 		_controller = GetComponent<CharacterController2D>();
@@ -18,6 +24,8 @@ public abstract class CharacterState : MonoBehaviour {
 		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 		_isFacingRight = transform.localScale.x > 0;
     }
+	
+	public virtual void OnActivate(){}
 	
 	public abstract bool IsRelevant();
 }

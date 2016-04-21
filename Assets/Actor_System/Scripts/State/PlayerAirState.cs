@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
+using System.Collections;
 
-public class CharacterGround : CharacterState {
+public class PlayerAirState : CharacterState {
 
 	private float horizontalMovementDirection;
 	public float MaxSpeed = 7f;
-	public float Acceleration = 10f;
+	public float Acceleration = 5f;
 	
-	public void Start(){
-
+	public override void OnActivate(){
+		
+		_controller.Parameters.Gravity = -50f;
 	}
 	
 	public void Update(){
 		
 
 		HandleInput();
-
 		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * Acceleration));
 	}
 
@@ -47,6 +48,7 @@ public class CharacterGround : CharacterState {
 	
 	public override bool IsRelevant(){
 		
-		return _controller.State.IsCollidingDown;
+		print("Check");
+		return !_controller.State.IsCollidingDown;
 	}
 }
