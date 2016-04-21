@@ -71,6 +71,16 @@ public class CharacterController2D : MonoBehaviour {
 		_velocity += force;
 	}
 
+	public void AddHorizontalForce(float force){
+		
+		_velocity.x += force;
+	}
+	
+	public void AddVerticalForce(float force){
+		
+		_velocity.y += force;
+	}
+
 	public void SetForce(Vector2 force){
 		
 		_velocity = force;

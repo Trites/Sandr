@@ -4,10 +4,13 @@ using System.Collections;
 public class PlayerWallState : CharacterState {
 
 	private float horizontalMovementDirection;
-	public float MaxSpeed = 7f;
-	public float Acceleration = 5f;
+	public float DefaultSlideSpeed = 3f;
+	
+	public float FastSlideSpeed = 7f;
+	public float Acceleration = 10f;
 
 	private int _wallDirection;
+	private float _slideSpeed;
 
 	void Start () {
 	
@@ -16,15 +19,21 @@ public class PlayerWallState : CharacterState {
 	
 	public override void OnActivate(){
 		
-		_controller.Parameters.Gravity = -5f;
+		_controller.Parameters.Gravity = 0f;
 		_controller.SetVerticalForce(0f);
-		//_controller.SetHorizontalForce(0f);
+		_slideSpeed = DefaultSlideSpeed;
 	}
 	
-	void Update () {
+	protected override void Update () {
+		base.Update();
 	
-		_wallDirection = _controller.State.IsCollidingRight ? 1 : -1;
+		_wallDirection = _controller.State.IsCollidingRight ? 1 : (_controller.State.IsCollidingLeft) ? -1 : 0;
+		
+		if(_facingDirection == _wallDirection)
+			Flip();
+		
 		HandleInput();
+		_controller.SetVerticalForce(Mathf.Lerp(_controller.Velocity.y, -_slideSpeed, Time.deltaTime * Acceleration));
 	}
 	
 	private void HandleInput()
@@ -33,16 +42,10 @@ public class PlayerWallState : CharacterState {
         if(Input.GetKey(KeyCode.RightArrow)){
 
 			horizontalMovementDirection = 1;
-			
-			if(!_isFacingRight)
-				Flip();
 				
 		}else if(Input.GetKey(KeyCode.LeftArrow)){
 			
 			horizontalMovementDirection = -1;
-		
-			if(_isFacingRight)
-				Flip();
 			
 		}else{
 			
@@ -50,9 +53,22 @@ public class PlayerWallState : CharacterState {
 		}
 		
 		if(Input.GetKeyDown(KeyCode.Space)){
+						
+			_controller.SetHorizontalForce(5f * -_wallDirection);
 			
-			_controller.Jump();
-			_controller.SetHorizontalForce(5f * -_wallDirection + 3f * horizontalMovementDirection);
+			if(!Input.GetKey(KeyCode.DownArrow))
+				_controller.Jump();
+			
+			if(_wallDirection == -horizontalMovementDirection)
+				_controller.AddHorizontalForce(3f * horizontalMovementDirection);
+		}
+		
+		if(Input.GetKey(KeyCode.DownArrow)){
+			
+			_slideSpeed = FastSlideSpeed;
+		}else{
+			
+			_slideSpeed = DefaultSlideSpeed;
 		}
     }
 	

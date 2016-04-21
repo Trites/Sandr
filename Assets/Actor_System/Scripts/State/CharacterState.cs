@@ -3,9 +3,11 @@
 public abstract class CharacterState : MonoBehaviour {
 
 	public int Priority = 0;
-		
+	
+	protected bool _isFacingRight { get{ return _facingDirection == 1; }}
+	
 	protected CharacterController2D _controller;
-	protected bool _isFacingRight;
+	protected int _facingDirection;
 	
 	void OnGUI(){
 	
@@ -16,13 +18,18 @@ public abstract class CharacterState : MonoBehaviour {
 	void Awake(){
 				
 		_controller = GetComponent<CharacterController2D>();
-		_isFacingRight = transform.localScale.x > 0;
+		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
+	}
+	
+	protected virtual void Update(){
+		
+		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
 	}
 	
     protected void Flip()
     {
 		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-		_isFacingRight = transform.localScale.x > 0;
+		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
     }
 	
 	public virtual void OnActivate(){}

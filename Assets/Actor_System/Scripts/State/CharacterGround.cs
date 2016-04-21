@@ -10,8 +10,8 @@ public class CharacterGround : CharacterState {
 
 	}
 	
-	public void Update(){
-		
+	protected override void Update(){
+		base.Update();
 
 		HandleInput();
 

@@ -12,8 +12,8 @@ public class PlayerAirState : CharacterState {
 		_controller.Parameters.Gravity = -50f;
 	}
 	
-	public void Update(){
-		
+	protected override void Update(){
+		base.Update();
 
 		HandleInput();
 		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * Acceleration));
