@@ -17,7 +17,7 @@ public class PlayerInput : MonoBehaviour {
 	
 	protected void Update () {
 	
-		Horizontal = Input.GetAxis("Horizontal");
+		Horizontal = Input.GetAxisRaw("Horizontal");
 		Vertical = Input.GetAxis("Vertical");
 		RightStick = new Vector2(Input.GetAxis("Right_Horizontal"), Input.GetAxis("Right_Vertical"));
 		Jump = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(JOYSTICK_JUMP);	

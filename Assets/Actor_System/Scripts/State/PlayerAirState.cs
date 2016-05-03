@@ -27,7 +27,7 @@ public class PlayerAirState : CharacterState {
 		
 		horizontalMovementDirection = _input.Horizontal;
 		
-		if(horizontalMovementDirection != 0.0f){
+		if(horizontalMovementDirection != 0){
 			FaceRight(horizontalMovementDirection > 0.0f);
 		}
     }

@@ -27,9 +27,7 @@ public class PlayerWallState : CharacterState {
 	protected void Update () {
 	
 		_wallDirection = _controller.State.IsCollidingRight ? 1 : (_controller.State.IsCollidingLeft) ? -1 : 0;
-		
-		if(_facingDirection == _wallDirection)
-			Flip();
+		FaceRight(_wallDirection == -1);
 		
 		HandleInput();
 		_controller.SetVerticalForce(Mathf.Lerp(_controller.Velocity.y, -_slideSpeed, Time.deltaTime * Acceleration));

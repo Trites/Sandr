@@ -18,7 +18,8 @@ public abstract class CharacterState : MonoBehaviour {
 		if(this.tag == "Player"){
 		
 			GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
-			GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);	
+			GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);
+			GUI.Label(new Rect(0, 60, 300, 50), "Facing: " + _facingDirection);	
 		}
 	}
 	
@@ -26,7 +27,7 @@ public abstract class CharacterState : MonoBehaviour {
 				
 		_controller = GetComponent<CharacterController2D>();
 		_input = GetComponent<PlayerInput>();
-		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
+		_facingDirection = 1;
 	}
 	
 	protected void FaceRight(bool faceRight){
