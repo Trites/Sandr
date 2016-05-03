@@ -24,8 +24,7 @@ public class PlayerWallState : CharacterState {
 		_slideSpeed = DefaultSlideSpeed;
 	}
 	
-	protected override void Update () {
-		base.Update();
+	protected void Update () {
 	
 		_wallDirection = _controller.State.IsCollidingRight ? 1 : (_controller.State.IsCollidingLeft) ? -1 : 0;
 		
@@ -39,31 +38,24 @@ public class PlayerWallState : CharacterState {
 	private void HandleInput()
     {
 		
-        if(Input.GetKey(KeyCode.RightArrow)){
-
-			horizontalMovementDirection = 1;
-				
-		}else if(Input.GetKey(KeyCode.LeftArrow)){
-			
-			horizontalMovementDirection = -1;
-			
-		}else{
-			
-			horizontalMovementDirection = 0;
-		}
+		horizontalMovementDirection = _input.Horizontal;
 		
-		if(Input.GetKeyDown(KeyCode.Space)){
+		/*if(horizontalMovementDirection != 0.0f){
+			FaceRight(horizontalMovementDirection > 0.0f);
+		}*/
+		
+		if(_input.Jump){
 						
 			_controller.SetHorizontalForce(5f * -_wallDirection);
 			
-			if(!Input.GetKey(KeyCode.DownArrow))
+			if(_input.Vertical >= 0)
 				_controller.Jump();
 			
 			if(_wallDirection == -horizontalMovementDirection)
 				_controller.AddHorizontalForce(3f * horizontalMovementDirection);
 		}
 		
-		if(Input.GetKey(KeyCode.DownArrow)){
+		if(_input.Vertical < 0){
 			
 			_slideSpeed = FastSlideSpeed;
 		}else{

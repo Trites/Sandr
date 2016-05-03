@@ -22,14 +22,15 @@ public class MeleeWeapon : MonoBehaviour {
 	public AudioSource StabSound;
 	public AudioSource HitSound;
 	
-	private Transform _transform;
+	private Transform _transform;	
+	private PlayerInput _input;
 	private bool _attacking;
 	private CameraEffects _camera;
-	//private AudioSource _audio;
 	
 	public void Awake(){
 		
 		_transform = transform;
+		_input = GetComponentInParent<PlayerInput>();
 		GetComponentInParent<CharacterAnimationInterface>().EndAttackEvent += EndAttackAnim;
 		_attacking = false;
 		_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraEffects>();
@@ -49,10 +50,11 @@ public class MeleeWeapon : MonoBehaviour {
 			rayHit.collider.gameObject.SendMessage("HitBy", new WeaponHitData(rayHit.point, (position - rayHit.point).normalized, 100f), SendMessageOptions.DontRequireReceiver);
 		}
 	}
+
 	
 	public void Update(){
 
-		if(!_attacking && Input.GetKeyDown(KeyCode.LeftControl)){
+		if(!_attacking && _input.Attack){
 					
 			Animator anim = GetComponentInParent<Animator>();
 			anim.SetTrigger("Attack");
@@ -60,6 +62,8 @@ public class MeleeWeapon : MonoBehaviour {
 			_camera.ShakeCamera(0, 0.08f, 0.1f);
 			StabSound.Play();
 		}
+		
+
 	}
 	
 	public void FixedUpdate(){

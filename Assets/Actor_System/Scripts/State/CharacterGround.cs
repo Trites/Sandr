@@ -10,8 +10,7 @@ public class CharacterGround : CharacterState {
 
 	}
 	
-	protected override void Update(){
-		base.Update();
+	protected void Update(){
 
 		HandleInput();
 
@@ -20,12 +19,18 @@ public class CharacterGround : CharacterState {
 
     private void HandleInput()
     {
-		if(_controller.CanJump && Input.GetKeyDown(KeyCode.Space)){
+		if(_controller.CanJump && _input.Jump){
 			
 			_controller.Jump();
 		}
 		
-        if(Input.GetKey(KeyCode.RightArrow)){
+		horizontalMovementDirection = _input.Horizontal;
+		
+		if(horizontalMovementDirection != 0.0f){
+			FaceRight(horizontalMovementDirection > 0.0f);
+		}
+		
+        /*if(Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("Horizontal") > 0){
 
 			horizontalMovementDirection = 1;
 			
@@ -42,7 +47,7 @@ public class CharacterGround : CharacterState {
 		}else{
 			
 			horizontalMovementDirection = 0;
-		}
+		}*/
     }
 	
 	public override bool IsRelevant(){

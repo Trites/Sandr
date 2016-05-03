@@ -15,6 +15,8 @@ GameObject:
   - 114: {fileID: 11418910}
   - 50: {fileID: 5011786}
   - 114: {fileID: 11496112}
+  - 114: {fileID: 11463180}
+  - 114: {fileID: 11434728}
   m_Layer: 10
   m_Name: EnemyWalking
   m_TagString: Untagged
@@ -22,6 +24,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &145740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 413462}
+  - 120: {fileID: 12059456}
+  - 114: {fileID: 11409798}
+  m_Layer: 0
+  m_Name: LaserRifle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &413462
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145740}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.5, z: 1}
+  m_Children: []
+  m_Father: {fileID: 484776}
+  m_RootOrder: 0
 --- !u!4 &484776
 Transform:
   m_ObjectHideFlags: 1
@@ -29,9 +60,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 125798}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.18, y: 5.41, z: 0}
+  m_LocalPosition: {x: 1.61, y: 7.5, z: 0}
   m_LocalScale: {x: 1, y: 2, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 413462}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!23 &2382766
@@ -98,6 +130,22 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &11409798
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e8f7c398f20a434fbbc0dd01d480731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AimMaterial: {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  FireMaterial: {fileID: 2100000, guid: e0ea26e3de5b943bf992d9e9edb177c5, type: 2}
+  BlockingLayers:
+    serializedVersion: 2
+    m_Bits: 768
 --- !u!114 &11418910
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -119,6 +167,17 @@ MonoBehaviour:
     JumpRestrictions: 0
     JumpFrequency: 0.25
     JumpMagnitude: 12
+--- !u!114 &11434728
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41197ec1a255e4e37a140dcc636ca3e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11452278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -131,6 +190,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParticleEffect: {fileID: 119314, guid: 6465c4973afe74fdc9244dce65e6122e, type: 2}
+--- !u!114 &11463180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22298c06c411a4823bb2dca360593188, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority: 1
+  target: {fileID: 0}
+  BlockingLayers:
+    serializedVersion: 2
+    m_Bits: 768
 --- !u!114 &11496112
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -149,6 +224,45 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   MaxSpeed: 4
+--- !u!120 &12059456
+LineRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145740}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    startWidth: 0.5
+    endWidth: 0.5
+    m_StartColor:
+      serializedVersion: 2
+      rgba: 4280295589
+    m_EndColor:
+      serializedVersion: 2
+      rgba: 4280295589
+  m_UseWorldSpace: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

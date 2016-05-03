@@ -12,8 +12,7 @@ public class PlayerAirState : CharacterState {
 		_controller.Parameters.Gravity = -50f;
 	}
 	
-	protected override void Update(){
-		base.Update();
+	protected void Update(){
 
 		HandleInput();
 		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * Acceleration));
@@ -21,28 +20,15 @@ public class PlayerAirState : CharacterState {
 
     private void HandleInput()
     {
-		if(_controller.CanJump && Input.GetKeyDown(KeyCode.Space)){
+		if(_controller.CanJump && _input.Jump){
 			
 			_controller.Jump();
 		}
 		
-        if(Input.GetKey(KeyCode.RightArrow)){
-
-			horizontalMovementDirection = 1;
-			
-			if(!_isFacingRight)
-				Flip();
-				
-		}else if(Input.GetKey(KeyCode.LeftArrow)){
-			
-			horizontalMovementDirection = -1;
+		horizontalMovementDirection = _input.Horizontal;
 		
-			if(_isFacingRight)
-				Flip();
-			
-		}else{
-			
-			horizontalMovementDirection = 0;
+		if(horizontalMovementDirection != 0.0f){
+			FaceRight(horizontalMovementDirection > 0.0f);
 		}
     }
 	

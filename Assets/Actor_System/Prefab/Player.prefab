@@ -50,6 +50,7 @@ GameObject:
   - 114: {fileID: 11487634}
   - 114: {fileID: 11407508}
   - 114: {fileID: 11418332}
+  - 114: {fileID: 11439310}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -389,6 +390,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41197ec1a255e4e37a140dcc636ca3e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11439310
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8478285cd530d4a57a1b182f3840b40b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ParticleEffect: {fileID: 119314, guid: 6465c4973afe74fdc9244dce65e6122e, type: 2}
 --- !u!114 &11443860
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -417,6 +430,7 @@ MonoBehaviour:
   Reach: 3.5
   StabSound: {fileID: 8219928}
   HitSound: {fileID: 8282040}
+  Thrown: {fileID: 133266, guid: 13bfb8df2cc8f40478eb2dccc2c3d640, type: 2}
 --- !u!114 &11485896
 MonoBehaviour:
   m_ObjectHideFlags: 1

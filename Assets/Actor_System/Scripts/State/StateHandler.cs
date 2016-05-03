@@ -47,7 +47,7 @@ public class StateHandler : MonoBehaviour {
 		activeState = nextState;
 	}
 	
-	void FixedUpdate(){
+	void LateUpdate(){
 		
 		UpdateActiveState();
 	}

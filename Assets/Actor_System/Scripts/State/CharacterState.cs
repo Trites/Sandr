@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CharacterController2D), typeof(PlayerInput))]
 public abstract class CharacterState : MonoBehaviour {
+
+	private const int LEFT_FACING_ROTATION = 180;
+	private const int RIGHT_FACING_ROTATION = 0;
 
 	public int Priority = 0;
 	
 	protected bool _isFacingRight { get{ return _facingDirection == 1; }}	
 	protected CharacterController2D _controller;
+	protected PlayerInput _input;
 	protected int _facingDirection;
 	
 	void OnGUI(){
@@ -17,22 +22,34 @@ public abstract class CharacterState : MonoBehaviour {
 		}
 	}
 	
-	void Awake(){
+	protected virtual void Awake(){
 				
 		_controller = GetComponent<CharacterController2D>();
+		_input = GetComponent<PlayerInput>();
 		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
 	}
 	
-	protected virtual void Update(){
+	protected void FaceRight(bool faceRight){
 		
-		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
+		_facingDirection = faceRight ? FaceRight() : FaceLeft();
 	}
 	
     protected void Flip()
     {
-		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-		_facingDirection = (int)Mathf.Sign(transform.localScale.x);
+		_facingDirection = _isFacingRight ? FaceLeft() : FaceRight();
     }
+	
+	protected int FaceRight(){
+		
+		transform.localRotation = Quaternion.Euler(0, RIGHT_FACING_ROTATION, 0);
+		return 1;
+	}
+	
+	protected int FaceLeft(){
+		
+		transform.localRotation = Quaternion.Euler(0, LEFT_FACING_ROTATION, 0);
+		return -1;
+	}
 	
 	public virtual void OnActivate(){}
 	

@@ -37,8 +37,7 @@ public abstract class FollowPlayer : CharacterState {
 			Debug.LogError("No controller.");
 	}
 	
-	protected override void Update(){
-		base.Update();
+	protected void Update(){
 		
 		if(_seePlayer && Vector2.Distance(_transform.position, _targetTransform.position) > 1f){
 			
