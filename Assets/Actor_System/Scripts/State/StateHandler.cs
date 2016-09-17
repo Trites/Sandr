@@ -5,6 +5,8 @@ public class StateHandler : MonoBehaviour {
 	private CharacterState[] states;
 	private CharacterState activeState;
 	
+	public CharacterState ActiveState { get {return activeState; }}
+	
 	void Start(){
 		
 		states = GetComponents<CharacterState>();
@@ -38,7 +40,7 @@ public class StateHandler : MonoBehaviour {
 			prevState.enabled = false;
 			
 			if(nextState != null){
-				
+				Debug.Log("State transition: " + prevState + " -> " + nextState);
 				nextState.enabled = true;
 				nextState.OnActivate();
 			}

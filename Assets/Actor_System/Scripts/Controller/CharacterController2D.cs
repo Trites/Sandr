@@ -131,7 +131,7 @@ public class CharacterController2D : MonoBehaviour {
 			//	MoveHorizontally(ref deltaMove, (Mathf.Sign(deltaMove.x) == 1) ? rightDist : leftDist, 0f);
 			//}
 				//MoveHorizontally(ref deltaMove);
-				
+	
 			MoveVertically(ref deltaMove);
 			//CorrectHorizontalPlacement(ref deltaMove, true);
 			//CorrectHorizontalPlacement(ref deltaMove, false);
@@ -253,7 +253,7 @@ public class CharacterController2D : MonoBehaviour {
 			if(!rayHit)
 				continue;
 
-			rayDistance = rayHit.distance;//Mathf.Abs(deltaMove.x);
+			rayDistance = rayHit.distance;
 			slopeAngle = Vector2.Angle(rayHit.normal, Vector2.up);
 			
 			if(direction == 1){
@@ -389,38 +389,49 @@ public class CharacterController2D : MonoBehaviour {
 	//TODO: This results on problems where player is standing on a horizontal "box" in a slope.
 	private void HandleSlopeVertical(ref Vector2 deltaMove){
 		
+		//Calculate ray origin and direction
 		float center = (_raycastBottomLeft.x + _raycastBottomRight.x) / 2f;
 		Vector2 direction = -Vector2.up;
 		
+		//Maximum slope distance and origin of raycast
 		float slopeDistance = SlopeLimitTangent * (_raycastBottomRight.x - center);
-		Vector2 slopeRayVector = new Vector2(center, _raycastBottomRight.y);
+		Vector2 slopeRayOrigin = new Vector2(center + deltaMove.x, _raycastBottomRight.y);
 		
-		Debug.DrawRay(slopeRayVector, direction * slopeDistance, Color.yellow);
-		RaycastHit2D rayHit = Physics2D.Raycast(slopeRayVector, direction, slopeDistance, PlatformMask);
+		//Cast ray and draw debug yellow debug ray.
+		RaycastHit2D rayHit = Physics2D.Raycast(slopeRayOrigin, direction, slopeDistance, PlatformMask);
+		Debug.DrawRay(slopeRayOrigin, direction * rayHit.distance, Color.yellow);
 		
+		//If no hit then there is no slope to handle
 		if(!rayHit)
 			return;
 			
+		//Decide if we are moving up or down slope by looking at slope normal
 		bool isMovingDownSlope = Mathf.Sign(rayHit.normal.x) == Mathf.Sign(deltaMove.x);
 		
+		//Store the slope angle
+		float angle = Vector2.Angle(rayHit.normal, Vector2.up);
+		State.SlopeAngle = angle;
+		
+		//If we are moving fown slope the movement will be handled by method MoveVertically
 		if(!isMovingDownSlope)
 			return;
 			
-		float angle = Vector2.Angle(rayHit.normal, Vector2.up);
-		
+		//Sanity check
 		if(Mathf.Abs(angle) < 0.0001f)
 			return;
-			
+		
+		//Adjust velocity to move player to slope.
 		State.IsMovingDownSlope = true;
-		State.SlopeAngle = angle;
-		deltaMove.y = rayHit.point.y - slopeRayVector.y;
+		deltaMove.y = rayHit.point.y - slopeRayOrigin.y;
 	}
 	
 	private bool HandleSlopeHorizontal(ref Vector2 deltaMove, float angle, bool isGoingRight){
 		
+		//Won't climb walls
 		if(Mathf.RoundToInt(angle) == 90)
 			return false;
 			
+		//Won't climb slopes steeper that SlopeLimit
 		if(angle > Parameters.SlopeLimit){
 			
 			deltaMove.x = 0;
