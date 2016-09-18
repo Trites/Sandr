@@ -317,7 +317,7 @@ public class CharacterController2D : MonoBehaviour {
 			
 			if(!rayHit)
 				continue;
-			hit = true;	
+				
 			if(!isGoingUp){
 				
 				float verticalDistanceToHit = _transform.position.y - rayHit.point.y;
