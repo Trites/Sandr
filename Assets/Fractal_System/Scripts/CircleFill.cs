@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-
+using MathNet.Numerics;
 public class CircleFill : MonoBehaviour
 {
 
@@ -52,7 +52,7 @@ public class CircleFill : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-			FillTriangle(subTriangles[i], circle);
+            FillTriangle(subTriangles[i], circle);
             /*Circle sub = MidCircle(subTriangles[i]);
 
             CircleCollider2D subcc = gameObject.AddComponent<CircleCollider2D>() as CircleCollider2D;
@@ -64,16 +64,16 @@ public class CircleFill : MonoBehaviour
 
     private void FillTriangle(Vector2[] points, Circle parent)
     {
-		Circle circle = TriangleCircle(points);
-		SpawnCircle(circle);
-		
-		circle = EdgeCircle(new Line(points[0], points[1]), parent, circle);
-		SpawnCircle(circle);
-		
-		if(circle.Radius < 0.05f)
-			return;
-		
-		FillTriangle(CirclePointTriangle(points[0], circle), circle);
+        Circle circle = TriangleCircle(points);
+        SpawnCircle(circle);
+
+        SpawnCircle(EdgeCircle(new Line(points[0], points[1]), parent, circle));		
+        SpawnCircle(EdgeCircle(new Line(points[2], points[0]), parent, circle));
+
+        if (circle.Radius < 0.05f)
+            return;
+
+        FillTriangle(CirclePointTriangle(points[0], circle), circle);
     }
 
     private void SpawnCircle(Circle circle)
@@ -84,33 +84,43 @@ public class CircleFill : MonoBehaviour
         cc.radius = circle.Radius;
     }
 
-	private Circle EdgeCircle(Line line, Circle circleA, Circle circleB){
+    private Circle EdgeCircle(Line line, Circle circleA, Circle circleB)
+    {
+
+        //Bend factor of circles
+        float bA = 1.0f / circleA.Radius;
+        float bB = 1.0f / circleB.Radius;
+
+        //Radius given by Descartes circle theorem
+        float bs = bA + bB + 2 * Mathf.Sqrt(bA * bB);
+        float radius = 1.0f / bs;
+
+        //Centre-bend products
+        Complex zA = new Complex(bA * circleA.Center.x, bA * circleA.Center.y);
+        Complex zB = new Complex(bB * circleB.Center.x, bB * circleB.Center.y);
+
+        //Limit centre-bend
+        Vector2 vec = line.B - line.A;
+        Vector2 vecU = vec.normalized;
+        Complex zC = new Complex(-vecU.y, vecU.x);
+
+        //Solve complex Descartes circle theorem, giving two solutions
+        Complex zpA = zA + zB + zC + 2.0f * (zA * zB + zB * zC + zC * zA).SquareRoot();
+        Complex zpB = zA + zB + zC - 2.0f * (zA * zB + zB * zC + zC * zA).SquareRoot();
+
+        Vector2 centerA = new Vector2((float)zpA.Real, (float)zpA.Imaginary) / bs;
+		Vector2 centerB = new Vector2((float)zpB.Real, (float)zpB.Imaginary) / bs;
 		
-		//Bend factor of circles
-		float bA = 1.0f/circleA.Radius;
-		float bB = 1.0f/circleB.Radius;
-	
-		//Radius given by Descartes circle theorem
-		float bs = bA + bB + 2*Mathf.Sqrt(bA*bB);
-		float radius = 1.0f/bs;
-		
-		//Centre-bend products
-		Complex zA = new Complex(bA * circleA.Center);		
-		Complex zB = new Complex(bB * circleB.Center);
-		
-		//Limit centre-bend
-		Vector2 vec = line.B - line.A;
-		Vector2 vecU = vec.normalized;
-		Complex zC = new Complex(vecU.y, -vecU.x);
-		
-		//Solve complex Descartes circle theorem, giving two solutions
-		Complex zpA = zA + zB + zC + 2.0f*(zA*zB + zB*zC + zC*zA).sqrt();
-		Complex zpB = zA + zB + zC - 2.0f*(zA*zB + zB*zC + zC*zA).sqrt();
-		
-		 Vector2 centerA = new Vector2(zpB.real, zpB.real)/bs;
-		 
-		 return new Circle(centerA, radius);
-	}
+		float errA = Mathf.Abs((circleA.Center - centerA).magnitude - (radius + circleA.Radius)) +
+						Mathf.Abs((circleB.Center - centerA).magnitude - (radius + circleB.Radius));
+						
+						
+		float errB = Mathf.Abs((circleA.Center - centerB).magnitude - (radius + circleA.Radius)) +
+						Mathf.Abs((circleB.Center - centerB).magnitude - (radius + circleB.Radius));
+						
+						
+        return new Circle(errB > errA ? centerA : centerB , radius);
+    }
 
     private Circle TriangleCircle(Vector2[] points)
     {
