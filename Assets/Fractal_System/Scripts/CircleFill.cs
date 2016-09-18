@@ -32,6 +32,9 @@ public class CircleFill : MonoBehaviour
         public Vector2 B;
     }
 
+	public float MinRadius = 0.05f;
+
+
     private PolygonCollider2D _triangle;
     private Circle circle;
 
@@ -67,14 +70,42 @@ public class CircleFill : MonoBehaviour
         Circle circle = TriangleCircle(points);
         SpawnCircle(circle);
 
-        SpawnCircle(EdgeCircle(new Line(points[0], points[1]), parent, circle));		
-        SpawnCircle(EdgeCircle(new Line(points[2], points[0]), parent, circle));
+        FillEdge(new Line(points[0], points[1]), parent, circle);		
+        FillEdge(new Line(points[2], points[0]), parent, circle);
 
-        if (circle.Radius < 0.05f)
+        if (circle.Radius <= MinRadius)
             return;
 
         FillTriangle(CirclePointTriangle(points[0], circle), circle);
     }
+	
+	private void FillEdge(Line line, Circle circleA, Circle circleB){
+		
+		Circle c = EdgeCircle(line, circleA, circleB);
+		SpawnCircle(c);
+		
+		if(c.Radius <= MinRadius)
+			return;
+			
+		FillInner(circleA, circleB, c);
+			
+		FillEdge(line, circleA, c);
+		FillEdge(line, circleB, c);
+	}
+	
+	private void FillInner(Circle circleA, Circle circleB, Circle circleC){
+		
+		Circle c = InnerCircle(circleA, circleB, circleC);
+		SpawnCircle(c);
+		
+		if(c.Radius <= MinRadius)
+			return;
+			
+		FillInner(circleA, circleB, c);		
+		FillInner(circleA, c, circleC);		
+		FillInner(c, circleB, circleC);
+			
+	}
 
     private void SpawnCircle(Circle circle)
     {
@@ -83,6 +114,40 @@ public class CircleFill : MonoBehaviour
         cc.offset = circle.Center;
         cc.radius = circle.Radius;
     }
+	
+	private Circle InnerCircle(Circle circleA, Circle circleB, Circle circleC){
+		
+		//Bend factor of circles
+        float bA = 1.0f / circleA.Radius;
+        float bB = 1.0f / circleB.Radius;
+		float bC = 1.0f / circleC.Radius;
+		
+		//Radius given by Descartes circle theorem
+        float bs = bA + bB + bC + 2 * Mathf.Sqrt(bA * bB + bB * bC + bC * bA);
+        float radius = 1.0f / bs;
+		
+		//Centre-bend products
+        Complex zA = new Complex(bA * circleA.Center.x, bA * circleA.Center.y);
+        Complex zB = new Complex(bB * circleB.Center.x, bB * circleB.Center.y);
+		Complex zC = new Complex(bC * circleC.Center.x, bC * circleC.Center.y);
+		
+		//Solve complex Descartes circle theorem, giving two solutions
+        Complex zpA = zA + zB + zC + 2.0f * (zA * zB + zB * zC + zC * zA).SquareRoot();
+        Complex zpB = zA + zB + zC - 2.0f * (zA * zB + zB * zC + zC * zA).SquareRoot();
+		
+		Vector2 centerA = new Vector2((float)zpA.Real, (float)zpA.Imaginary) / bs;
+		Vector2 centerB = new Vector2((float)zpB.Real, (float)zpB.Imaginary) / bs;
+		
+		float errA = Mathf.Abs((circleA.Center - centerA).magnitude - (radius + circleA.Radius)) +
+						Mathf.Abs((circleB.Center - centerA).magnitude - (radius + circleB.Radius));
+						
+						
+		float errB = Mathf.Abs((circleA.Center - centerB).magnitude - (radius + circleA.Radius)) +
+						Mathf.Abs((circleB.Center - centerB).magnitude - (radius + circleB.Radius));
+						
+						
+        return new Circle(errB > errA ? centerA : centerB , radius);
+	}
 
     private Circle EdgeCircle(Line line, Circle circleA, Circle circleB)
     {
