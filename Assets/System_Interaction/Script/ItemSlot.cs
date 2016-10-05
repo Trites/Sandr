@@ -21,6 +21,8 @@ public class ItemSlot : MonoBehaviour {
 		HeldItem = item;
 		item.transform.SetParent(transform, true);
 		item.PickedUp();
+		
+		OnPickup(item);
 	}
 	
 	public void Drop(){
@@ -29,4 +31,6 @@ public class ItemSlot : MonoBehaviour {
 		HeldItem.Dropped();
 		HeldItem = null;
 	}
+	
+	protected virtual void OnPickup(Item item){}
 }

@@ -9,7 +9,7 @@ public class Hands : ItemSlot {
 	// Use this for initialization
 	void Awake () {
 		
-		_input = GetComponent<PlayerInput>();
+		_input = GetComponentInParent<PlayerInput>();
 	}
 	
 	// Update is called once per frame
@@ -19,5 +19,23 @@ public class Hands : ItemSlot {
 			
 			Drop();
 		}
+	}
+	
+	void OnTriggerEnter2D(Collider2D other){
+		
+		if(HeldItem != null)
+			return;
+		
+		Item item = other.GetComponent<Item>();
+		
+		if(item != null){
+			
+			PickUp(item);
+		}
+	}
+	
+	protected override void OnPickup(Item item){
+		
+		item.transform.localPosition = new Vector2(0.8f, 0);
 	}
 }
