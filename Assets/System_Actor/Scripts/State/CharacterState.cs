@@ -20,6 +20,7 @@ public abstract class CharacterState : MonoBehaviour {
 			GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
 			GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);
 			GUI.Label(new Rect(0, 60, 300, 50), "Facing: " + _facingDirection);	
+			GUI.Label(new Rect(0, 75, 300, 50), "Input: " + _input.Horizontal + " : " + _input.Vertical);	
 		}
 	}
 	
