@@ -7,7 +7,7 @@ public class Item : MonoBehaviour {
 
 	private Rigidbody2D _body;
 	
-	private void Awake(){
+	protected virtual void Awake(){
 		
 		_body = GetComponent<Rigidbody2D>();
 	}
@@ -25,4 +25,6 @@ public class Item : MonoBehaviour {
 		Vector2 direction = new Vector2(Random.Range(-0.5f, 0.5f), 1).normalized;	
 		_body.velocity = DropForce * direction;
 	}
+	
+	public virtual void Use(){}
 }

@@ -19,6 +19,14 @@ public class Hands : ItemSlot {
 			
 			Drop();
 		}
+		
+		if(_input.Attack){
+			
+			if(HeldItem != null){
+				
+				HeldItem.Use();
+			}
+		}
 	}
 	
 	void OnTriggerEnter2D(Collider2D other){

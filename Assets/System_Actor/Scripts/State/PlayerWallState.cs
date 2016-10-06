@@ -64,7 +64,6 @@ public class PlayerWallState : CharacterState {
 	
 	public override bool IsRelevant(){
 		
-		return !_controller.State.IsCollidingDown && (_controller.State.IsCollidingLeft || _controller.State.IsCollidingRight) && _controller.Velocity.y <= 0f
-				;//&& _controller.State.SlopeAngle ;
+		return !_controller.State.IsCollidingDown && (_controller.State.IsCollidingLeft || _controller.State.IsCollidingRight) && _controller.Velocity.y <= 0f;
 	}
 }

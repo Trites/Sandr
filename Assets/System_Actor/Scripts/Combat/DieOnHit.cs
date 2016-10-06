@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class DieOnHit : MonoBehaviour {
+public class DieOnHit : ProjectileTarget {
 	
 	public GameObject ParticleEffect;
 	
@@ -12,7 +13,12 @@ public class DieOnHit : MonoBehaviour {
 	
 	public void HitBy(MeleeWeapon.WeaponHitData hitData){
 		
-		Vector2 particleVelocity = Vector2.zero;
+		
+	}
+
+    protected override void OnHit(Projectile.DamageModel damage, Projectile.HitData hitData)
+    {
+        Vector2 particleVelocity = Vector2.zero;
 		
 		Rigidbody2D body = GetComponent<Rigidbody2D>();
 		if(body != null){
@@ -25,6 +31,6 @@ public class DieOnHit : MonoBehaviour {
 		emitter.Spawn(hitData.HitPosition, hitData.Direction*10f, particleVelocity*5f, hitData.Force, 120f, 20f, 120);
 
 		Debug.DrawLine(transform.position, hitData.HitPosition, Color.red, 3f);
-		Destroy(gameObject);		
-	}
+		Destroy(gameObject);
+    }
 }

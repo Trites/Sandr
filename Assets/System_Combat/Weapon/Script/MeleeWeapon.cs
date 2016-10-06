@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeleeWeapon : MonoBehaviour {
+public class MeleeWeapon : Item {
 
 	public struct WeaponHitData{
 		
@@ -27,14 +27,27 @@ public class MeleeWeapon : MonoBehaviour {
 	private bool _attacking;
 	private CameraEffects _camera;
 	
-	public void Awake(){
-		
+	protected override void Awake(){
+		base.Awake();
 		_transform = transform;
 		_input = GetComponentInParent<PlayerInput>();
 		GetComponentInParent<CharacterAnimationInterface>().EndAttackEvent += EndAttackAnim;
 		_attacking = false;
 		_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraEffects>();
 		//_audio = GetComponent<AudioSource>();
+	}
+	
+	public override void Use(){
+		Animator anim = GetComponent<Animator>();
+		
+		if(anim == null)
+			Debug.LogWarning("NULL");
+		
+		anim.SetTrigger("Attack");
+		_attacking = true;
+		_camera.ShakeCamera(0, 0.08f, 0.1f);
+		StabSound.Play();
+		//Strike();
 	}
 	
 	public void Strike(){
@@ -53,7 +66,7 @@ public class MeleeWeapon : MonoBehaviour {
 
 	
 	public void Update(){
-
+		
 		if(!_attacking && _input.Attack){
 					
 			Animator anim = GetComponentInParent<Animator>();
@@ -67,7 +80,7 @@ public class MeleeWeapon : MonoBehaviour {
 	}
 	
 	public void FixedUpdate(){
-				
+		
 		if(_attacking){
 			
 			Vector2 position = _transform.position;

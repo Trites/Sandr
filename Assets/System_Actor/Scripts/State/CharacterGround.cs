@@ -10,8 +10,13 @@ public class CharacterGround : CharacterState {
 
 	}
 	
+	public override void OnActivate(){
+		
+		transform.localScale = new Vector2(1.1f, 1f);
+	}
+	
 	protected void Update(){
-
+		
 		HandleInput();
 
 		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * Acceleration));
@@ -22,6 +27,8 @@ public class CharacterGround : CharacterState {
 		if(_controller.CanJump && _input.Jump){
 			
 			_controller.Jump();
+			
+			transform.localScale = new Vector2(0.8f, 1.4f);
 		}
 		
 		horizontalMovementDirection = _input.Horizontal;

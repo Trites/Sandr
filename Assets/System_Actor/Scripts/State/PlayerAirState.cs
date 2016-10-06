@@ -16,6 +16,9 @@ public class PlayerAirState : CharacterState {
 
 		HandleInput();
 		_controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, horizontalMovementDirection * MaxSpeed, Time.deltaTime * Acceleration));
+		
+		//float scaling = Mathf.Abs(_controller.Velocity.y)/100f;
+		//transform.localScale = new Vector2(1f - scaling, 1f + scaling);
 	}
 
     private void HandleInput()
