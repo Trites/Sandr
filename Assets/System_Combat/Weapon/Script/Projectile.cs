@@ -52,7 +52,7 @@ public class Projectile : MonoBehaviour {
 		
 		if(target != null){
 			
-			target.InvokeHit(Damage, new HitData(transform.position, _body.velocity.normalized, _body.velocity.magnitude));
+			target.InvokeHit(Damage, new HitData(transform.position, _body.velocity.normalized, _body.velocity.magnitude*20));
 		}
 		
 		Destroy(gameObject);

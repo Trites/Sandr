@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RangedWeapon : Item {
 
@@ -8,10 +6,12 @@ public class RangedWeapon : Item {
 
 	public override void Use(){
 		
-		GameObject obj = Instantiate(ProjectilePrefab, transform.position, Quaternion.identity) as GameObject;
-		
+		GameObject obj = Instantiate(ProjectilePrefab, transform.position, Quaternion.identity) as GameObject;		
 		Projectile projectile = obj.GetComponent<Projectile>();
-		projectile.SetVelocity(new Vector2(1, 0));
+		
+		int direction = transform.rotation.y == 0 ? 1 : -1;
+		
+		projectile.SetVelocity(new Vector2(direction, 0));
 		
 	}
 }

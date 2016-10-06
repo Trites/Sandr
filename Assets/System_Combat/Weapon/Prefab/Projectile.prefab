@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1798607038023390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.8385563, y: -0.6803243, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebf0995d62a2a43f49c7e28d4f4959a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProjectileVelocity: 20
+  ProjectileVelocity: 40
 --- !u!212 &212546745041492586
 SpriteRenderer:
   m_ObjectHideFlags: 1
