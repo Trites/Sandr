@@ -17,6 +17,8 @@ public class Item : MonoBehaviour {
 		_body.isKinematic = true;
 		_body.velocity = Vector2.zero;
 		_body.angularVelocity = 0f;
+		
+		OnPickUp();
 	}
 
 	public void Dropped(){
@@ -27,4 +29,6 @@ public class Item : MonoBehaviour {
 	}
 	
 	public virtual void Use(){}
+	
+	protected virtual void OnPickUp(){}
 }
