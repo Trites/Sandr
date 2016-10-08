@@ -33,6 +33,16 @@ public class PlayerAirState : CharacterState {
 		if(horizontalMovementDirection != 0){
 			FaceRight(horizontalMovementDirection > 0.0f);
 		}
+		
+		if(_input.Attack){
+			
+			_hands.InvokeUse();
+		}
+		
+		if(_input.Drop){
+			
+			_hands.InvokeDrop();
+		}
     }
 	
 	public override bool IsRelevant(){

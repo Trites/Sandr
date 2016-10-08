@@ -33,6 +33,8 @@ public class Projectile : MonoBehaviour {
 	public DamageModel Damage;
 
 	public float ProjectileVelocity = 20;
+	
+	public GameObject CollisionEffect;
 
 	private Rigidbody2D _body;
 	
@@ -46,14 +48,25 @@ public class Projectile : MonoBehaviour {
 		_body.velocity = direction * ProjectileVelocity;
 	}
 	
-	void OnTriggerEnter2D(Collider2D coll) {
-        
-		ProjectileTarget target = coll.GetComponent<ProjectileTarget>();
+	void OnCollisionEnter2D(Collision2D coll) {
+ 
+		ProjectileTarget target = coll.gameObject.GetComponent<ProjectileTarget>();
 		
 		if(target != null){
 			
 			target.InvokeHit(Damage, new HitData(transform.position, _body.velocity.normalized, _body.velocity.magnitude*20));
 		}
+		
+		float ang = Vector2.Angle(coll.contacts[0].normal, Vector2.up);
+		Vector3 cross = Vector3.Cross(coll.contacts[0].normal, Vector2.up);
+		
+		if(cross.z > 0)
+			ang = 360 - ang;
+		
+		GameObject obj = Instantiate(CollisionEffect, coll.contacts[0].point, Quaternion.Euler(0, 0, ang));
+		obj.GetComponent<CollisionParticles>().Spawn(30, coll.contacts[0].normal, _body.velocity.normalized);
+		
+		Debug.DrawRay(coll.contacts[0].point, coll.contacts[0].normal, Color.red, 5f);
 		
 		Destroy(gameObject);
     }

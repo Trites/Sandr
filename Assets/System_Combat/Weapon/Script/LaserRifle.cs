@@ -35,7 +35,8 @@ public class LaserRifle : MonoBehaviour {
 	
 	public void Fire(Vector2 direction, float range, LayerMask blockingLayers){
 		
-		_lineRenderer.SetWidth(0.5f, 0.5f);
+		_lineRenderer.startWidth = 0.5f;
+		_lineRenderer.endWidth = 0.5f;
 		_lineRenderer.material = FireMaterial;	
 		_lineRenderer.SetPositions(new Vector3[]{transform.position, GetBeamHitPoint(direction, range, blockingLayers)});
 		
@@ -58,7 +59,8 @@ public class LaserRifle : MonoBehaviour {
 	public void Aim(Vector2 direction, float range, LayerMask blockingLayers){
 		
 		_lineRenderer.enabled = true;
-		_lineRenderer.SetWidth(0.05f, 0.05f);
+		_lineRenderer.startWidth = 0.5f;
+		_lineRenderer.endWidth = 0.5f;
 		_lineRenderer.material = AimMaterial;	
 		_lineRenderer.SetPositions(new Vector3[]{transform.position, GetBeamHitPoint(direction, range, blockingLayers)});
 	}

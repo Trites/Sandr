@@ -1,32 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hands : ItemSlot {
-
-	PlayerInput _input;
-
-	// Use this for initialization
-	void Awake () {
-		
-		_input = GetComponentInParent<PlayerInput>();
-	}
 	
-	// Update is called once per frame
-	void Update () {
+	public void InvokeUse(){
 		
-		if(_input.Drop){
-			
-			Drop();
-		}
-		
-		if(_input.Attack){
-			
-			if(HeldItem != null){
+		if(HeldItem != null){
 				
 				HeldItem.Use();
-			}
 		}
+	}
+	
+	public void InvokeDrop(){
+		
+		Drop();
 	}
 	
 	void OnTriggerEnter2D(Collider2D other){

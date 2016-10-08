@@ -6,20 +6,19 @@ public class RangedWeapon : Item {
 	
 	private CharacterController2D _controller;
 
+
 	public override void Use(){
 		
 		GameObject obj = Instantiate(ProjectilePrefab, transform.position, Quaternion.identity) as GameObject;		
 		Projectile projectile = obj.GetComponent<Projectile>();
 		
-		int direction = transform.rotation.y == 0 ? 1 : -1;
-		
-		projectile.SetVelocity(new Vector2(direction, 0));
-		
-		_controller.AddForce(new Vector2(10 * -direction, 0));
+		projectile.SetVelocity(new Vector2(_controller.FacingDirection, 0));		
+		_controller.AddForce(new Vector2(10 * -_controller.FacingDirection, 0));
 	}
 	
 	protected override void OnPickUp(){
 		
+		transform.rotation = Quaternion.identity;
 		_controller = GetComponentInParent<CharacterController2D>();
 		
 		if(_controller == null){

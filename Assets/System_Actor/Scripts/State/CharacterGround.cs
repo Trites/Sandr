@@ -37,24 +37,15 @@ public class CharacterGround : CharacterState {
 			FaceRight(horizontalMovementDirection > 0.0f);
 		}
 		
-        /*if(Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("Horizontal") > 0){
-
-			horizontalMovementDirection = 1;
+		if(_input.Attack){
 			
-			if(!_isFacingRight)
-				Flip();
-				
-		}else if(Input.GetKey(KeyCode.LeftArrow)){
-			
-			horizontalMovementDirection = -1;
+			_hands.InvokeUse();
+		}
 		
-			if(_isFacingRight)
-				Flip();
+		if(_input.Drop){
 			
-		}else{
-			
-			horizontalMovementDirection = 0;
-		}*/
+			_hands.InvokeDrop();
+		}
     }
 	
 	public override bool IsRelevant(){

@@ -21,8 +21,8 @@ public abstract class FollowPlayer : CharacterState {
 	private float _exploreTimer;
 	private Vector2 _directionToTarget;
 
-	public void Awake(){
-		
+	protected override void Awake(){
+
 		_transform = transform;
 		_controller = GetComponent<CharacterController2D>();
 		_targetTransform = GameObject.FindGameObjectWithTag(_playerTag).transform;

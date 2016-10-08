@@ -16,6 +16,8 @@ public class CharacterController2D : MonoBehaviour {
 	public ControllerParameters Parameters { get{ return _overrideParameters ?? DefaultParameters; } }
 	public GameObject StandingOn { get; private set; }
 	
+	public int FacingDirection {get; set;}
+	
 	public Vector3 PlatformVelocity { get; private set; }
 	public bool CanJump{ 
 		get { 
@@ -32,7 +34,6 @@ public class CharacterController2D : MonoBehaviour {
 	
 	private Vector2 _velocity;
 	private Transform _transform;
-	private Rigidbody2D _body;
 	private Vector2 _localScale;
 	private BoxCollider2D _boxCollider;
 	private ControllerParameters _overrideParameters;	
@@ -54,7 +55,6 @@ public class CharacterController2D : MonoBehaviour {
 		HandleCollisions = true;
 		State = new ControllerState();
 		_transform = transform;
-		_body = GetComponent<Rigidbody2D>();
 		_localScale = transform.localScale;
 		_boxCollider = GetComponent<BoxCollider2D>();
 	
@@ -99,7 +99,6 @@ public class CharacterController2D : MonoBehaviour {
 	public void Jump(){
 		
 		SetVerticalForce(Parameters.JumpMagnitude);
-		//AddForce(new Vector2(0, Parameters.JumpMagnitude));
 		_jumpIn = Parameters.JumpFrequency;
 	}
 

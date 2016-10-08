@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DeathParticleEffect : MonoBehaviour {
 
-	ParticleEmitter emitter;
+	ParticleSystem emitter;
 	
 	public void Awake(){
 		
@@ -12,12 +12,13 @@ public class DeathParticleEffect : MonoBehaviour {
 
 	public void Spawn(Vector2 impactPosition, Vector2 impactVelocity, Vector2 particleVelocity, float impactMass, float particleMassSpan, float particleMassAdjust, int count){
 		
-		emitter = GetComponent<ParticleEmitter>();
+		emitter = GetComponent<ParticleSystem>();
 		emitter.Emit(count);
 		
 		//emitter.emit = false;
 		
-		Particle[] particles = emitter.particles;
+		ParticleSystem.Particle[] particles = new ParticleSystem.Particle[emitter.particleCount];
+		int a = emitter.GetParticles(particles);
 	
 		for(int i = 0; i < particles.Length; i++){
 			
@@ -25,6 +26,6 @@ public class DeathParticleEffect : MonoBehaviour {
 			particles[i].velocity = Util.getBounceVelocity(particles[i].position, impactPosition, particleVelocity, impactVelocity, particleMass, impactMass);
 		}
 		
-		emitter.particles = particles;
+		emitter.SetParticles(particles, a);
 	}
 }

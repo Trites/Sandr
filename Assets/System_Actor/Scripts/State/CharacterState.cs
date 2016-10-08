@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(CharacterController2D), typeof(PlayerInput))]
+[RequireComponent(typeof(CharacterController2D), typeof(PlayerInput), typeof(Hands))]
 public abstract class CharacterState : MonoBehaviour {
 
 	private const int LEFT_FACING_ROTATION = 180;
@@ -8,10 +8,11 @@ public abstract class CharacterState : MonoBehaviour {
 
 	public int Priority = 0;
 	
-	protected bool _isFacingRight { get{ return _facingDirection == 1; }}	
+	protected bool _isFacingRight { get{ return FacingDirection == 1; }}	
 	protected CharacterController2D _controller;
 	protected PlayerInput _input;
-	protected int _facingDirection;
+	protected Hands _hands;
+	protected int FacingDirection { get { return _controller.FacingDirection; } set { _controller.FacingDirection = value; }}
 	
 	void OnGUI(){
 	
@@ -19,7 +20,7 @@ public abstract class CharacterState : MonoBehaviour {
 		
 			GUI.Label(new Rect(0, 15, 300, 50), "Velocity: " + _controller.Velocity + " (" + _controller.Velocity.magnitude + ")");
 			GUI.Label(new Rect(0, 30, 300, 50), "State: " + _controller.State);
-			GUI.Label(new Rect(0, 60, 300, 50), "Facing: " + _facingDirection);	
+			GUI.Label(new Rect(0, 60, 300, 50), "Facing: " + FacingDirection);	
 			GUI.Label(new Rect(0, 75, 300, 50), "Input: " + _input.Horizontal + " : " + _input.Vertical);	
 		}
 	}
@@ -28,17 +29,18 @@ public abstract class CharacterState : MonoBehaviour {
 				
 		_controller = GetComponent<CharacterController2D>();
 		_input = GetComponent<PlayerInput>();
-		_facingDirection = 1;
+		_hands = GetComponentInChildren<Hands>();
+		FacingDirection = 1;
 	}
 	
 	protected void FaceRight(bool faceRight){
 		
-		_facingDirection = faceRight ? FaceRight() : FaceLeft();
+		FacingDirection = faceRight ? FaceRight() : FaceLeft();
 	}
 	
     protected void Flip()
     {
-		_facingDirection = _isFacingRight ? FaceLeft() : FaceRight();
+		FacingDirection = _isFacingRight ? FaceLeft() : FaceRight();
     }
 	
 	protected int FaceRight(){

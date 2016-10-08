@@ -60,6 +60,16 @@ public class PlayerWallState : CharacterState {
 			
 			_slideSpeed = DefaultSlideSpeed;
 		}
+		
+		if(_input.Attack){
+			
+			_hands.InvokeUse();
+		}
+		
+		if(_input.Drop){
+			
+			_hands.InvokeDrop();
+		}
     }
 	
 	public override bool IsRelevant(){
