@@ -30,7 +30,7 @@ public class ObjectSpawner : MonoBehaviour {
 	
 	private void Spawn(){
 		
-		//DeathParticleEffect emitter = (Instantiate(SpawnObject, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
+		DeathParticleEffect emitter = (Instantiate(SpawnObject, transform.position, Quaternion.identity) as GameObject).GetComponent<DeathParticleEffect>();
 		
 	}
 }

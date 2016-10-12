@@ -16,7 +16,7 @@ public class DeathParticleEffect : MonoBehaviour {
 		emitter.Emit(count);
 		
 		//emitter.emit = false;
-		
+		Debug.Log("Eeey");
 		ParticleSystem.Particle[] particles = new ParticleSystem.Particle[emitter.particleCount];
 		int a = emitter.GetParticles(particles);
 	
@@ -24,6 +24,7 @@ public class DeathParticleEffect : MonoBehaviour {
 			
 			float particleMass = Random.value * particleMassSpan + particleMassAdjust;
 			particles[i].velocity = Util.getBounceVelocity(particles[i].position, impactPosition, particleVelocity, impactVelocity, particleMass, impactMass);
+			//particles[i].velocity = new Vector2(0, 3);
 		}
 		
 		emitter.SetParticles(particles, a);
